@@ -1,15 +1,21 @@
 from typing import List, Dict
 from torch import Tensor
-from transformers import pipeline
+from sentence_transformers import SentenceTransformer
+from sentence_transformers.util import cos_sim
 
 def classify(items: List[str], classes: List[str], embeddings: Tensor=None) -> Dict[str, List[str]]:
     result = {c:[] for c in classes}
+
+    model = SentenceTransformer('thenlper/gte-large')
+
     if embeddings is None:
-        classifier = pipeline("zero-shot-classification", model="mjwong/e5-large-mnli")
-    
-        for feedback in items:
-            scores = classifier(feedback, classes)
-            result[classes[scores['scores'].index(max(scores['scores']))]].append(feedback)
+        embeddings = model.encode(classes)
+
+    for feedback in items:
+        embedding = model.encode(feedback)
+        scores = [cos_sim(embedding, category) for category in embeddings]
+        result[classes[scores.index(max(scores))]].append(feedback)
+
     return result
 
 

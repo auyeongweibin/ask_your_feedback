@@ -52,7 +52,7 @@ def generate(context: str) -> str:
     messages = [
         prompt
     ]
-    # messages.append("NEXT REQUEST")
+    messages.append("NEXT REQUEST")
     response = palm.chat(
         **defaults,
         context=context,
