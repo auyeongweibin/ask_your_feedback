@@ -1,8 +1,8 @@
 import streamlit as st
-from unstructured.partition.pdf import partition_pdf
 import os
-from generate import generate
-from classify import classify
+from utils.generate import generate
+from utils.classify import classify
+from utils.extract import extract
 from classes import categories, sub_categories
 
 st.title('Summarise')
@@ -14,24 +14,8 @@ if file:
         f.write(file.getbuffer())
         st.success("Saved File")
     
-    processed = partition_pdf(f'./uploads/{file.name}')
+    qualitative, school = extract(file.name)
 
-    is_qualitative = False
-
-    qualitative = []
-
-    for line in processed:
-        text = str(line)
-        if text == 'Interpreting IASystem Course Summary Reports':
-            break
-        if text == 'STANDARD OPEN-ENDED QUESTIONS':
-            is_qualitative = True
-            continue
-        if text.startswith('©') or text.startswith('Printed'):
-            continue
-        if is_qualitative and text[0].isdigit():
-            qualitative.append(text[3:])
-    
     st.success("Extracted Qualitative Feedback")
 
     if len(qualitative) == 0:
@@ -75,6 +59,6 @@ if file:
             ```
         '''
 
-        response = generate(prompt)
+        response = generate(prompt, 'openai' if school == 'SMU' else 'bard')
 
         st.write(response)
