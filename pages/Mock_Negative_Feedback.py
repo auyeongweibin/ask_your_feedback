@@ -42,7 +42,7 @@ if file:
 
         result = generate(prompt, 'gpt-3.5-turbo')
         
-        st.success('Generated Negatice Feedback')
+        st.success('Generated Negative Feedback')
 
         st.markdown('#### Negative Feedback: ')
         st.write(result)

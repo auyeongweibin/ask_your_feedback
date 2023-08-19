@@ -1,9 +1,9 @@
 import streamlit as st
 import os
-from utils.letter_format import letter_format
+from utils.summarise import summarise
 from utils.extract import extract
 
-st.title('Letter Format')
+st.title('Summarise')
 st.markdown("## Hi Instructor, let me summarise your feedback for you 🎈")
 
 file = st.file_uploader('Upload your feedback!')
@@ -19,5 +19,5 @@ if file:
     if len(qualitative) == 0:
         st.write('No Qualitative Feedback Found')
     else:
-        response = letter_format(qualitative, school)
+        response = summarise(qualitative, school)
         st.write(response)

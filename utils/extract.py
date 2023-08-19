@@ -47,7 +47,7 @@ def extract(filename:str) -> List[str]:
 
     return result, school
 
-def extract_with_header(filename:str) -> List[str]:
+def extract_with_questions(filename:str) -> List[str]:
         
     processed = partition_pdf(f'./uploads/{filename}')
 
