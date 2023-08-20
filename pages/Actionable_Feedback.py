@@ -16,6 +16,10 @@ if file:
     
     qualitative, school = extract_with_questions(file.name)
 
+    qualitative = list(filter(lambda x: len(x.split('\n'))==1 or x.split('\n')[1].lower() not in ['nil', 'none', 'na', ''], qualitative))
+    
+    st.write(qualitative)
+
     st.success("Extracted Qualitative Feedback")
 
     if len(qualitative) == 0:
@@ -38,13 +42,15 @@ if file:
         result = list(filter(lambda x: x != '', response.split('\n')))
         result = list(filter(lambda x: not x[0].isdigit(), result))
 
+        st.write(result)
+
         document = Document()
 
-        run = document.add_paragraph().add_run('Actionable Feedback')
+        run = document.add_paragraph().add_run('Original with Actionable Feedback')
         run.font.name = 'Open Sans'
         run.font.size = Pt(12)
 
-        question_number = 0
+        question_number = 1
 
         for line in qualitative:
             if line[0].isdigit():
@@ -64,17 +70,17 @@ if file:
                 run.font.size = Pt(7)
                 run.bold = True
 
-                run = document.add_paragraph().add_run(result[question_number][3:-1] + '\n\n' + result[question_number+1][3:-1])
+                run = document.add_paragraph().add_run(result[question_number])
                 run.font.name = 'Open Sans'
                 run.font.size = Pt(7)
                 run.font.highlight_color = enum.text.WD_COLOR.YELLOW
-                question_number += 2
+                question_number += 1
         
-        document.save(os.path.join("./processed_pdfs/", file.name.replace('.pdf', '.docx')))
+        document.save(os.path.join("./processed_pdfs/", file.name.replace('.pdf', '_Actionable_Feedback.docx')))
 
-        with open(os.path.join("./processed_pdfs/", file.name.replace('.pdf', '.docx')),"rb") as f:
+        with open(os.path.join("./processed_pdfs/", file.name.replace('.pdf', '_Actionable_Feedback.docx')),"rb") as f:
             st.download_button(
                 label='Download Actionable Feedback',
                 data=f,
-                file_name=os.path.join("./processed_pdfs/", file.name.replace('.pdf', '.docx'))
+                file_name=file.name.replace('.pdf', '_Actionable_Feedback.docx')
             )

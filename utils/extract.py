@@ -16,7 +16,10 @@ def extract(filename:str) -> List[str]:
         elif text.startswith('University of Washington, Seattle College of Engineering Human Centered Design & Engr.'):
             school = 'UW'
             break
-    
+
+    # TO BE REMOVED
+    school = 'SMU'
+
     st.success(f'Identified {school} Report')
 
     is_qualitative = False
@@ -62,9 +65,10 @@ def extract_with_questions(filename:str) -> List[str]:
             school = 'UW'
             break
     
+    # TO BE REMOVED
+    school = 'SMU'
+    
     st.success(f'Identified {school} Report')
-
-    is_header = True
 
     is_qualitative = False
 

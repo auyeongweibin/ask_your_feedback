@@ -1,8 +1,9 @@
 import streamlit as st
 import os
-from utils.extract import extract_with_header
+from utils.extract import extract_with_questions
 from utils.generate import generate
-from docx import Document
+from docx import Document, enum
+from docx.shared import Pt, RGBColor
 
 
 st.title('Mock Negative Feedback')
@@ -14,7 +15,9 @@ if file:
         f.write(file.getbuffer())
         st.success("Saved File")
 
-    qualitative, school = extract_with_header(file.name)
+    qualitative, school = extract_with_questions(file.name)
+
+    qualitative = list(filter(lambda x: len(x.split('\n'))==1 or x.split('\n')[1].lower() not in ['nil', 'none', 'na', ''], qualitative))
 
     st.success("Extracted Qualitative Feedback")
 
@@ -45,33 +48,49 @@ if file:
         st.success('Generated Negative Feedback')
 
         st.markdown('#### Negative Feedback: ')
-        st.write(result)
 
         result = list(filter(lambda x: x != '', result.split('\n')))
 
+        question_number = 0
+
         document = Document()
 
-        question_number = 0
+        run = document.add_paragraph().add_run('Original with Mocked Negative Feedback')
+        run.font.name = 'Open Sans'
+        run.font.size = Pt(12)
 
         for line in qualitative:
             if line[0].isdigit():
                 if school == 'SMU':
-                    document.add_paragraph(line.split('\n')[1])
+                    run = document.add_paragraph().add_run(line.split('\n')[1])
+                    run.font.name = 'Open Sans'
+                    run.font.size = Pt(7)
+                    
                 elif school == 'UW':
-                    document.add_paragraph(''.join(line.split('. ')[1:]))
+                    run = document.add_paragraph().add_run(''.join(line.split('. ')[1:]))
+                    run.font.name = 'Open Sans'
+                    run.font.size = Pt(7)
+                    
             else:
-                document.add_heading(line+'\n', level=4)
-                document.add_paragraph(result[question_number][4:-1]+'\n\n'+result[question_number+1][4:-1])
+                run = document.add_paragraph().add_run('\n' + line)
+                run.font.name = 'Open Sans'
+                run.font.size = Pt(7)
+                run.bold = True
+                run.font.highlight_color = enum.text.WD_COLOR.GRAY_50
 
+                run = document.add_paragraph().add_run(result[question_number][4:-1]+'\n\n'+result[question_number+1][4:-1])
+                run.font.name = 'Open Sans'
+                run.font.size = Pt(7)
+                run.font.color.rgb = RGBColor(0xff, 0x00, 0x00)
                 question_number += 2
         
-        document.save(os.path.join("./processed_pdfs/", file.name.replace('.pdf', '.docx')))
+        document.save(os.path.join("./processed_pdfs/", file.name.replace('.pdf', '_Mock_Negative.docx')))
 
-        with open(os.path.join("./processed_pdfs/", file.name.replace('.pdf', '.docx')),"rb") as f:
+        with open(os.path.join("./processed_pdfs/", file.name.replace('.pdf', '_Mock_Negative.docx')),"rb") as f:
             st.download_button(
-                label='Download File',
+                label='Download Mock',
                 data=f,
-                file_name=os.path.join("./processed_pdfs/", file.name.replace('.pdf', '.docx'))
+                file_name=file.name.replace('.pdf', '_Mock_Negative.docx')
             )
 
         

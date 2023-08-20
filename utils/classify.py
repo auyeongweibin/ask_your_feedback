@@ -16,6 +16,8 @@ def classify(items: List[str], classes: List[str], embeddings: Tensor=None) -> D
         scores = [cos_sim(embedding, category) for category in embeddings]
         result[classes[scores.index(max(scores))]].append(feedback)
 
+    result = {key: value for key, value in result.items() if len(value) > 0}
+
     return result
 
 

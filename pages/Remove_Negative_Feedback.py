@@ -15,6 +15,8 @@ if file:
     
     qualitative, school = extract_with_questions(file.name)
 
+    qualitative = list(filter(lambda x: len(x.split('\n'))==1 or x.split('\n')[1].lower() not in ['nil', 'none', 'na', ''], qualitative))
+
     questions = list(filter(lambda x: len(x) and not x[0].isdigit(), qualitative))
     
     if len(questions) == 0:
@@ -40,5 +42,5 @@ if file:
             st.download_button(
                 label='Download Original without Negative',
                 data=f,
-                file_name=filename
+                file_name=file.name.replace('.pdf', '_No_Negative.docx')
             )
