@@ -37,7 +37,7 @@ def extract(filename:str) -> List[str]:
             text = str(line)
             if text == 'Interpreting IASystem Course Summary Reports':
                 break
-            if text == 'STANDARD OPEN-ENDED QUESTIONS':
+            if text == 'STANDARD OPEN-ENDED QUESTIONS' or text == 'INSTRUCTOR-ADDED OPEN-ENDED QUESTIONS':
                 is_qualitative = True
                 continue
             if text.startswith('©') or text.startswith('Printed'):
@@ -96,7 +96,7 @@ def extract_with_questions(filename:str) -> List[str]:
             #     result.append(text)
             if text == 'Interpreting IASystem Course Summary Reports':
                 break
-            if text == 'STANDARD OPEN-ENDED QUESTIONS':
+            if text == 'STANDARD OPEN-ENDED QUESTIONS' or text == 'INSTRUCTOR-ADDED OPEN-ENDED QUESTIONS':
                 is_qualitative = True
                 continue
             if text.startswith('©') or text.startswith('Printed'):

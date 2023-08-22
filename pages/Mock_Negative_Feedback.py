@@ -23,6 +23,8 @@ if file:
 
     questions = list(filter(lambda x: len(x) and not x[0].isdigit(), qualitative))
 
+    format = '\n'.join([f"{(i*2)+1}. 'first negative response to the question {i+1}'\n{(i*2)+2}. 'second negative response to the question {i+1}'" for i in range(len(questions))])
+
     if len(questions) == 0:
         st.write('No Qualitative Feedback Found')
     else:
@@ -32,14 +34,7 @@ if file:
             ({questions})
 
             ```
-            1. 'first negative response to the first question'
-            2. 'second negative response to the first question'
-            3. 'first negative response to the second question'
-            4. 'second negative response to the second question'
-            5. 'first negative response to the third question'
-            6. 'second negative response to the third question'
-            7. 'first negative response to the fourth question'
-            8. 'second negative response to the fourth question'
+            {format}
             ```
         '''
 
@@ -76,7 +71,6 @@ if file:
                 run.font.name = 'Open Sans'
                 run.font.size = Pt(7)
                 run.bold = True
-                run.font.highlight_color = enum.text.WD_COLOR.GRAY_50
 
                 run = document.add_paragraph().add_run(result[question_number][4:-1]+'\n\n'+result[question_number+1][4:-1])
                 run.font.name = 'Open Sans'
