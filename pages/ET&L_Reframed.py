@@ -37,11 +37,14 @@ if file:
 
             ```
             for each code/category:
-            Code/Category: 'One to two sentence summary of feedback in the code/category'
+            Code/Category: 'summary of feedback in the code/category'
             ```
         '''
 
-        response = generate(prompt, 'gpt-3.5-turbo' if school == 'SMU' else 'bard')
+        # response = generate(prompt, 'gpt-3.5-turbo' if school == 'SMU' else 'bard')
+        response = generate(prompt, 'gpt-3.5-turbo')
+
+        st.write(response)
 
         result = list(filter(lambda x: x not in ['', '```'], response.split('\n')))
 
@@ -54,20 +57,21 @@ if file:
         feedback = ''
 
         for line in result:
-            if line.startswith('Code/Category'):
+            # if line.startswith('Code/Category'):
+            if not line.startswith('- '):
                 if feedback != '':
-                    run = document.add_paragraph(style='List Bullet').add_run(feedback[1:])
+                    run = document.add_paragraph(style='List Bullet').add_run(feedback)
                     run.font.name = 'Open Sans'
                     run.font.size = Pt(7)
 
                     feedback = ''
 
-                run = document.add_paragraph().add_run(line.split(': ')[1])
+                run = document.add_paragraph().add_run(line[:-1])
                 run.font.name = 'Open Sans'
                 run.font.size = Pt(7)
                 run.font.bold = True
             else:
-                feedback += line[1:]
+                feedback += line[2:]
         
         if feedback != '':
             run = document.add_paragraph(style='List Bullet').add_run(feedback[1:])

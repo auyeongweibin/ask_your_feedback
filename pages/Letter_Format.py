@@ -22,7 +22,7 @@ if file:
         st.write('No Qualitative Feedback Found')
     else:
         prompt = f'''
-            Using the data in parenthesis, write a letter to summarise the feedback in a constructive manner, a format is given in triple backticks.
+            Using the data in parenthesis, write a letter to paraphrase and summarise the feedback in a constructive manner, a format is given in triple backticks.
             If there is any negative feedback, use the sandwich method, i.e. position negative feedback between 2 other pieces of positive feedback, e.g. 'positive feedback', 'negative feedback'. However, 'positive feedback'
 
             ({qualitative})

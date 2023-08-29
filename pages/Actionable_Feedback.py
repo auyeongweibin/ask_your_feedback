@@ -16,33 +16,32 @@ if file:
     
     qualitative, school = extract_with_questions(file.name)
 
-    qualitative = list(filter(lambda x: len(x.split('\n'))==1 or x.split('\n')[1].lower() not in ['nil', 'none', 'na', ''], qualitative))
-    
-    st.write(qualitative)
+    qualitative = list(filter(lambda x: len(x.split('\n'))==1 or x.split('\n')[1].lower() not in ['nil', 'nil.', 'none', 'na', ''], qualitative))
 
     st.success("Extracted Qualitative Feedback")
 
     if len(qualitative) == 0:
         st.write('No Qualitative Feedback Found')
     else:
+        questions = list(filter(lambda x: len(x) and not x[0].isdigit(), qualitative))
+
+        format = '\n'.join([f"{i+1}. 'actionable feedback for question {i+1}'" for i in range(len(questions))])
+
         prompt = f'''
             For each question and set of associated questions in parenthesis, suggest actionable feedback for each question, and output it in the format in triple backticks:
             ({qualitative})
 
             ```
-            1. 'actionable feedback for the first question'
-            2. 'actionable feedback for the second question'
-            3. 'actionable feedback for the third question'
-            4. 'actionable feedback for the fourth question'
+            {format}
             ```
         '''
 
-        response = generate(prompt, 'bard')
+        # response = generate(prompt, 'bard')
+        response = generate(prompt, 'gpt-3.5-turbo')
 
         result = list(filter(lambda x: x != '', response.split('\n')))
-        result = list(filter(lambda x: not x[0].isdigit(), result))
-
-        st.write(result)
+        # result = list(filter(lambda x: not x[0].isdigit(), result))
+        result = list(filter(lambda x: x[0].isdigit(), result))
 
         document = Document()
 
@@ -50,7 +49,7 @@ if file:
         run.font.name = 'Open Sans'
         run.font.size = Pt(12)
 
-        question_number = 1
+        question_number = 0
 
         for line in qualitative:
             if line[0].isdigit():
@@ -70,7 +69,8 @@ if file:
                 run.font.size = Pt(7)
                 run.bold = True
 
-                run = document.add_paragraph().add_run(result[question_number])
+                # run = document.add_paragraph().add_run(result[question_number])
+                run = document.add_paragraph().add_run(result[question_number].split('. ')[1])
                 run.font.name = 'Open Sans'
                 run.font.size = Pt(7)
                 run.font.highlight_color = enum.text.WD_COLOR.YELLOW

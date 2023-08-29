@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 from utils.extract import extract_with_questions
+from utils.extract import extract_sutd
 from utils.generate import generate
 from docx import Document, enum
 from docx.shared import Pt, RGBColor
@@ -39,6 +40,8 @@ if file:
         '''
 
         result = generate(prompt, 'gpt-3.5-turbo')
+
+        st.write(result)
         
         st.success('Generated Negative Feedback')
 

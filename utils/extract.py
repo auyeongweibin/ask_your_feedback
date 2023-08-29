@@ -61,6 +61,7 @@ def extract_with_questions(filename:str) -> List[str]:
         elif text.startswith('University of Washington, Seattle College of Engineering Human Centered Design & Engr.'):
             school = 'UW'
             break
+        
     
     st.success(f'Identified {school} Report')
 
