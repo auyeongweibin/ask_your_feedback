@@ -10,3 +10,4 @@ transformers==4.33.2
 unstructured==0.10.16
 google-generativeai
 typing
+pdf2image
