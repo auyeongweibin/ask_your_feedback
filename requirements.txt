@@ -11,4 +11,4 @@ unstructured==0.10.16
 google-generativeai
 typing
 pdf2image
-pdfminer
+pdfminer-six
