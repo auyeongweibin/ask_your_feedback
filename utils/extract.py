@@ -17,7 +17,7 @@ def extract(filename:str) -> List[str]:
             school = 'UW'
             break
 
-    st.success(f'Identified {school} Report')
+    # st.success(f'Identified {school} Report')
 
     is_qualitative = False
 
@@ -63,7 +63,7 @@ def extract_with_questions(filename:str) -> List[str]:
             break
         
     
-    st.success(f'Identified {school} Report')
+    # st.success(f'Identified {school} Report')
 
     is_qualitative = False
 
@@ -111,7 +111,7 @@ def extract_plus_questions(filename:str) -> List[str]:
             break
         
     
-    st.success(f'Identified {school} Report')
+    # st.success(f'Identified {school} Report')
 
     is_qualitative = False
 

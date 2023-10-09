@@ -1,13 +1,12 @@
-# from typing import List
-# import torch
+from typing import List
+from transformers import pipeline
 
-# model_path = '../ucc_model.pt'
-# model = torch.load(model_path)
+model = pipeline("text-classification", model="unitary/toxic-bert")
 
-# def nasty_filter(feedback:List[str]) -> List[List[str]]:
+def nasty_filter(feedback:List[str], threshold:int=0.001) -> List[List[str]]:
 
-#     predictions = model(feedback)
-#     nasty = list(filter(lambda x:x, predictions))
-#     not_nasty = list(filter(lambda x:x, predictions))
+    predictions = model(feedback)
+    nasty = [f for i, f in enumerate(feedback) if predictions[i]['score'] > threshold]
+    not_nasty = [f for i, f in enumerate(feedback) if predictions[i]['score'] <= threshold]
 
-#     return [nasty, not_nasty]
+    return [nasty, not_nasty]

@@ -5,11 +5,12 @@ from classes import categories, category_embeddings, category_descriptions
 from utils.generate import generate
 from utils.extract import extract_plus_questions
 from streamlit_carousel import carousel
+from utils.nasty_filter import nasty_filter
 
 
 
-st.title('Summary V2')
-st.markdown("## Hi Instructor, let me summarise your feedback for you 🎈")
+# st.title('Summary V2')
+# st.markdown("## Hi Instructor, let me summarise your feedback for you 🎈")
 
 file = st.file_uploader('Upload your feedback!')
 if file:
@@ -20,13 +21,15 @@ if file:
 
     qualitative = list(filter(lambda x: x.split("Answer: ")[1].lower() not in ['nil', 'none', 'na', 'n/a', ''], qualitative))
 
-    st.success("Extracted Qualitative Feedback")
+    nasty, qualitative = nasty_filter(qualitative)
+
+    # st.success("Extracted Qualitative Feedback")
 
     if len(qualitative) == 0:
         st.error('No Qualitative Feedback Found')
     else:
         coded = classify(items=qualitative, classes=categories, embeddings=category_embeddings, multilabel=True, threshold=0.85)
-        st.success("Coded Qualitative Feedback")
+        # st.success("Coded Qualitative Feedback")
 
         coded_without_questions = [[feedback.split(" Answer: ")[1] for feedback in coded[code]] for code in coded]
 
@@ -36,14 +39,14 @@ if file:
             ({qualitative})
 
             ```
-            Your Top Strengths: [one sentence summary for first category]
-            What Students Loved About Your Class: [one sentence summary for second category]
-            What Students Loved About You: [one sentence summary for third category]
-            What Students Want: [one sentence summary for fourth category]
+            Your Top Strengths: (short summary for first category)
+            What Students Loved About Your Class: (short summary for second category)
+            What Students Loved About You: (short summary for third category)
+            What Students Want: (short summary for fourth category)
             ```
         """
 
-        for_cards = generate(prompt, 'gpt-3.5-turbo' if school=='UW' else 'gpt-3.5-turbo-16k').split('\n')[1:-1]
+        for_cards = list(filter(lambda x: x != "", generate(prompt, 'gpt-3.5-turbo' if school=='UW' else 'gpt-3.5-turbo-16k').split('\n')[1:-1]))
         for_cards = [card.split(': ')[1] for card in for_cards]
 
         image = "https://wallpapers.com/images/featured-full/plain-black-background-02fh7564l8qq4m6d.jpg"
@@ -87,6 +90,11 @@ if file:
 
             st.write(summarised)
 
-            with st.expander("See Actual Feedback"):
+            with st.expander(f"See Actual Feedback ({len(coded[code])} Comments)"):
                 for feedback in coded[code]:
                     st.markdown("- " + feedback)
+
+        st.markdown('### Nasty Comments Filtered Out')
+        with st.expander("See Removed Feedback"):
+            for feedback in nasty:
+                st.markdown("- " + feedback)
